@@ -1,0 +1,19 @@
+[project]
+name = "langflow-cli"
+version = "0.1.0"
+description = "CLI tool for managing Langflow environments and resources"
+readme = "README.md"
+requires-python = ">=3.8"
+dependencies = [
+    "click>=8.0.0",
+    "requests>=2.28.0",
+    "rich>=13.0.0",
+]
+
+[project.scripts]
+langflow-cli = "langflow_cli.cli:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+

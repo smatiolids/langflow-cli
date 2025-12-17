@@ -2,6 +2,7 @@
 
 import json
 import click
+from pathlib import Path
 from rich.console import Console
 from rich.table import Table
 from langflow_cli.api_client import LangflowAPIClient
@@ -84,17 +85,77 @@ def get(flow_id: str, profile: str):
 
 
 @flows.command()
-@click.option("--name", required=True, help="Flow name")
+@click.option("--name", help="Flow name")
 @click.option("--data", help="Additional flow data as JSON string")
+@click.option("--file", type=click.Path(exists=True, path_type=Path), help="Path to JSON file containing flow data")
+@click.option("--project-id", help="Project ID to associate the flow with")
+@click.option("--project-name", help="Project name to associate the flow with")
 @click.option("--profile", help="Profile to use (overrides default)")
-def create(name: str, data: str, profile: str):
+def create(name: str, data: str, file: Path, project_id: str, project_name: str, profile: str):
     """Create a new flow."""
     try:
         client = LangflowAPIClient(profile_name=profile if profile else None)
         
         flow_data = {}
-        if data:
+        
+        # If file is provided, use its content (takes precedence over --data)
+        if file:
+            try:
+                with open(file, 'r', encoding='utf-8') as f:
+                    flow_data = json.load(f)
+            except json.JSONDecodeError:
+                console.print(f"[red]✗[/red] Invalid JSON in file: {file}")
+                raise click.Abort()
+            except IOError as e:
+                console.print(f"[red]✗[/red] Failed to read file {file}: {str(e)}")
+                raise click.Abort()
+        elif data:
             flow_data = json.loads(data)
+
+        if name:
+            flow_data["name"] = name
+
+        projects_list = client.list_projects()
+        
+        # Helper function to validate project ID exists
+        def validate_project_id(pid: str) -> bool:
+            """Check if a project ID exists in the projects list."""
+            if not pid:
+                return False
+            project_ids = [
+                str(p.get("id", p.get("project_id", ""))) 
+                for p in projects_list
+            ]
+            return str(pid) in project_ids
+        
+        # Handle project-id and project-name parameters (command-line takes precedence)
+        resolved_project_id = None
+        
+        if project_id:
+            # Validate project-id immediately
+            if not validate_project_id(project_id):
+                raise ValueError(f"Project not found: {project_id}")
+            resolved_project_id = project_id
+        elif project_name:
+            # Find project by name
+            matching_project = next(
+                (p for p in projects_list if p.get("name") == project_name),
+                None
+            )
+            if not matching_project:
+                raise ValueError(f"Project not found: {project_name}")
+            resolved_project_id = matching_project.get("id", matching_project.get("project_id"))
+        
+        # If no command-line project specified, check flow_data
+        if not resolved_project_id:
+            resolved_project_id = flow_data.get("folder_id") or flow_data.get("project_id")
+        
+        # Validate project exists if project_id is provided (from flow_data or resolved)
+        if resolved_project_id:
+            if not validate_project_id(resolved_project_id):
+                raise ValueError(f"Project not found: {resolved_project_id}")
+            # Add to flow_data as folder_id
+            flow_data["folder_id"] = resolved_project_id
         
         flow = client.create_flow(name, flow_data)
         console.print(f"[green]✓[/green] Flow created successfully")

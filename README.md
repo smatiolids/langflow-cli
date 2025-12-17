@@ -93,8 +93,20 @@ langflow-cli flows list
 # Get flow details
 langflow-cli flows get <flow_id>
 
-# Create a new flow
+# Create a new flow with JSON data string
 langflow-cli flows create --name "My Flow" --data '{"description": "A test flow"}'
+
+# Create a new flow from a JSON file
+langflow-cli flows create --name "My Flow" --file /path/to/flow-data.json
+
+# Create a flow and associate it with a project by ID
+langflow-cli flows create --name "My Flow" --project-id "123e4567-e89b-12d3-a456-426614174000"
+
+# Create a flow and associate it with a project by name
+langflow-cli flows create --name "My Flow" --project-name "My Project"
+
+# Create a flow from file and associate with a project
+langflow-cli flows create --file flow.json --project-name "My Project"
 
 # Update a flow
 langflow-cli flows update <flow_id> --data '{"name": "Updated Name"}'

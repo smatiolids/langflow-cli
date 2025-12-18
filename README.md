@@ -53,7 +53,7 @@ The CLI uses an AWS CLI-style configuration approach. Configuration is stored in
 ### Register Your First Environment
 
 ```bash
-langflow-cli env register prod --url https://api.langflow.org --api-key lf_xxxxxxxxxxxxx
+langflow-cli env register local_dev --url https://localhost:3000 --api-key YOUR_KEY
 ```
 
 This will:

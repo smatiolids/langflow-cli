@@ -132,7 +132,38 @@ uv pip install -e .
 
 ### Running Tests
 
-(Add test instructions when tests are added)
+1. **Install test dependencies**:
+```bash
+# Using uv
+uv pip install -e ".[dev]"
+
+# Or using pip
+pip install -e ".[dev]"
+```
+
+2. **Run all tests**:
+```bash
+pytest
+```
+
+3. **Run tests for a specific command group**:
+```bash
+# Run environment command tests
+pytest tests/test_env.py
+
+# Run with verbose output
+pytest -v tests/test_env.py
+```
+
+4. **Run tests with coverage**:
+```bash
+pytest --cov=langflow_cli --cov-report=html
+```
+
+5. **Run a specific test**:
+```bash
+pytest tests/test_env.py::TestEnvRegister::test_register_new_profile
+```
 
 ## Contributing
 

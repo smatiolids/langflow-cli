@@ -155,6 +155,9 @@ def set_current_remote(profile_name: str, remote_name: str) -> None:
     """
     Set the current remote for a profile.
     
+    When changing the remote, the branch is reset (cleared) since different
+    remotes may have different branches.
+    
     Args:
         profile_name: Profile name
         remote_name: Name of the remote to set as current
@@ -174,7 +177,16 @@ def set_current_remote(profile_name: str, remote_name: str) -> None:
     if not config.has_section(profile_section):
         config.add_section(profile_section)
     
+    # Check if remote is actually changing
+    current_remote = None
+    if config.has_option(profile_section, "remote"):
+        current_remote = config.get(profile_section, "remote")
+    
     config.set(profile_section, "remote", remote_name)
+    
+    # Reset branch when remote changes (or if setting for first time)
+    if current_remote != remote_name and config.has_option(profile_section, "branch"):
+        config.remove_option(profile_section, "branch")
     
     with open(get_git_config_path(), "w") as f:
         config.write(f)

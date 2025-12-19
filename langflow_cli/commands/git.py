@@ -99,13 +99,23 @@ def remote_remove(name: str):
 
 @remote.command("select")
 @click.argument("name")
+@click.argument("branch", required=False)
 @click.option("--profile", help="Profile to use (overrides default)")
-def remote_select(name: str, profile: Optional[str]):
-    """Set the active remote (origin)."""
+def remote_select(name: str, branch: Optional[str], profile: Optional[str]):
+    """Set the active remote (origin). Optionally select a branch at the same time.
+    
+    Examples:
+        langflow-cli git remote select origin
+        langflow-cli git remote select origin main
+    """
     try:
         profile_name = profile or get_default_profile()
         if not profile_name:
             raise ValueError("No profile selected. Use 'langflow-cli env register' to create one.")
+        
+        # Check if there's a current branch before changing remote
+        current_branch = get_current_branch(profile_name)
+        current_remote = get_current_remote(profile_name)
         
         # Verify remote exists
         from langflow_cli.git_config import get_remote
@@ -113,6 +123,24 @@ def remote_select(name: str, profile: Optional[str]):
         
         set_current_remote(profile_name, name)
         console.print(f"[green]✓[/green] Remote '{name}' selected for profile '{profile_name}'")
+        
+        # If branch is provided, verify it exists and set it
+        if branch:
+            from langflow_cli.git_client import GitHubClient
+            client = GitHubClient(name)
+            branches = client.get_branches()
+            
+            if branch not in branches:
+                console.print(f"[red]✗[/red] Branch '{branch}' not found in remote '{name}'")
+                console.print(f"[yellow]Available branches: {', '.join(branches)}[/yellow]")
+                raise click.Abort()
+            
+            set_current_branch(profile_name, branch)
+            console.print(f"[green]✓[/green] Branch '{branch}' selected")
+        else:
+            # Inform user if branch was reset (only if no branch was provided)
+            if current_branch and current_remote != name:
+                console.print(f"[yellow]Note: Branch '{current_branch}' was reset. Use 'langflow-cli git checkout <branch>' to select a branch.[/yellow]")
     except ValueError as e:
         console.print(f"[red]✗[/red] {str(e)}")
         raise click.Abort()

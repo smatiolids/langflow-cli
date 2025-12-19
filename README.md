@@ -224,6 +224,9 @@ langflow-cli git remote remove origin
 
 # Select the active remote for the current profile
 langflow-cli git remote select origin
+
+# Select remote and branch in one command
+langflow-cli git remote select origin main
 ```
 
 #### Branch Management
@@ -298,9 +301,12 @@ langflow-cli git pull "My_Project/My_Flow.json" --ignore-version-check
 # 1. Register a remote with token
 langflow-cli git remote add origin https://github.com/user/flows-repo --token YOUR_TOKEN
 
-# 2. Select remote and branch
-langflow-cli git remote select origin
-langflow-cli git checkout main
+# 2. Select remote and branch (can be done in one command or separately)
+langflow-cli git remote select origin main
+
+# Or select them separately:
+# langflow-cli git remote select origin
+# langflow-cli git checkout main
 
 # 3. Push a flow
 langflow-cli git push --flow-id abc-123-def --message "Add new flow"

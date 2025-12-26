@@ -247,7 +247,7 @@ langflow-cli git checkout main --remote origin
 
 #### Push/Pull Operations
 
-Flows are stored in the repository organized by project folders: `{project_name}/{flow_name}_{flow_id}.json`
+Flows are stored in the repository organized by project folders using the pattern: `{project_name}[{project_id}]/{flow_name}[{flow_id}].json`. Projects are stored as: `{project_name}[{project_id}]/{project_name}[{project_id}].json`
 
 **Push a flow or project to GitHub:**
 ```bash

@@ -145,7 +145,7 @@ def create(name: str, data: str, file: Path, project_id: str, project_name: str,
         flow_id = flow.get("id", flow.get("flow_id", "N/A"))
         flow_name = flow.get("name", "N/A")
         flow_description = flow.get("description", "N/A")
-        folder_id = flow.get("folder_id", flow.get("folder_id", "N/A"))
+        folder_id = flow.get("folder_id", flow.get("project_id", "N/A"))
         
         # Get project name
         projects_list = client.list_projects()

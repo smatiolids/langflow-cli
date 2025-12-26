@@ -134,19 +134,13 @@ class LangflowAPIClient:
         
         # Add project_id and project_name to each flow
         for flow in flows:
-            flow_project_id = flow.get("folder_id") or flow.get("project_id")
-            if flow_project_id:
-                # Ensure project_id is set
-                flow["project_id"] = str(flow_project_id)
-                # Add project_name if project exists
-                project = projects_dict.get(str(flow_project_id))
+            flow["project_id"] = flow.get("folder_id") or flow.get("project_id")
+            if flow["project_id"]:
+                project = projects_dict.get(str(flow["project_id"]))
                 if project:
                     flow["project_name"] = project.get("name", "N/A")
                 else:
                     flow["project_name"] = "N/A"
-            else:
-                flow["project_id"] = None
-                flow["project_name"] = "N/A"
         
         # Sort by project name first, then flow name (case-insensitive)
         flows.sort(key=lambda x: (
@@ -158,7 +152,18 @@ class LangflowAPIClient:
     
     def get_flow(self, flow_id: str) -> Dict[str, Any]:
         """Get flow details by ID."""
-        return self._request("GET", f"/api/v1/flows/{flow_id}")
+
+        flow = self._request("GET", f"/api/v1/flows/{flow_id}")
+
+        if not flow:
+            raise ValueError(f"Flow '{flow_id}' not found")
+            
+        flow["project_id"] = flow.get("folder_id") or flow.get("project_id") or None
+        
+        if flow["project_id"]:
+            project = self.get_project(flow["project_id"])
+            flow["project_name"] = project.get("name", "Unknown")
+        return flow
     
     def create_flow(self, name: str, data: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
         """Create a new flow."""

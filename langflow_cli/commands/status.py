@@ -5,7 +5,7 @@ from rich.console import Console
 from rich.table import Table
 from langflow_cli.config import get_default_profile, load_profile
 from langflow_cli.git_config import get_current_selection, get_remote
-from langflow_cli.utils import mask_api_key
+from langflow_cli.utils import mask_api_key, print_banner
 
 
 console = Console()
@@ -15,6 +15,7 @@ console = Console()
 @click.option("--profile", help="Profile to check (overrides default)")
 def status(profile: str):
     """Show current environment and Git configuration."""
+    print_banner(console)
     try:
         # Get current profile
         profile_name = profile if profile else get_default_profile()

@@ -8,7 +8,9 @@ if TYPE_CHECKING:
 
 from rich.console import Console
 from rich.json import JSON
-
+from rich.panel import Panel
+from rich.text import Text
+from rich.align import Align
 
 def print_json(data: Any, console: Optional[Console] = None) -> None:
     """
@@ -98,4 +100,40 @@ def validate_project_id(project_id: str, client: "LangflowAPIClient") -> bool:
         for p in projects_list
     ]
     return str(project_id) in project_ids
+
+
+def print_banner(console: Optional[Console] = None) -> None:
+    """
+    Print the Langflow CLI banner.
+    
+    Args:
+        console: Rich console instance (creates new one if not provided)
+    """
+    if console is None:
+        console = Console()
+    
+    try:
+        from langflow_cli import __version__
+        version_text = f"v{__version__}"
+    except ImportError:
+        version_text = ""
+    
+
+    logo = Text(
+        """
+
+██╗      ███████╗      ██████╗██╗     ██╗
+██║      ██╔════╝     ██╔════╝██║     ██║
+██║      █████╗   ██  ██║     ██║     ██║
+██║      ██╔══╝       ██║     ██║     ██║
+███████╗ ██║          ╚██████╗███████╗██║
+╚══════╝ ╚═╝           ╚═════╝╚══════╝╚═╝
+
+"""+f"Langflow CLI {version_text}",
+        style="bold purple",
+        justify="left",
+    )
+
+    console.print(logo)
+    console.print()
 

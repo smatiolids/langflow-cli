@@ -1,18 +1,29 @@
 """Main CLI entry point for Langflow CLI."""
 
+import sys
 import click
+from rich.console import Console
 from langflow_cli.commands import env as env_commands
 from langflow_cli.commands import settings as settings_commands
 from langflow_cli.commands import flows as flows_commands
 from langflow_cli.commands import projects as projects_commands
 from langflow_cli.commands import git as git_commands
 from langflow_cli.commands import status as status_command
+from langflow_cli.utils import print_banner
+
+console = Console()
 
 
-@click.group()
-def cli():
+@click.group(invoke_without_command=True)
+@click.pass_context
+def cli(ctx):
     """Langflow CLI - Manage Langflow environments and resources."""
-    pass
+    # Show banner when no subcommand is provided
+    if ctx.invoked_subcommand is None:
+        print_banner(console)
+        # Show help after banner
+        click.echo(ctx.get_help())
+        sys.exit(0)
 
 
 # Register command groups

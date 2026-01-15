@@ -60,7 +60,7 @@ The CLI uses an AWS CLI-style configuration approach. Configuration is stored in
 ### Register Your First Environment
 
 ```bash
-langflow-cli env register local_dev --url https://localhost:3000 --api-key YOUR_KEY
+lf-cli env register local_dev --url https://localhost:3000 --api-key YOUR_KEY
 ```
 
 This will:
@@ -73,22 +73,22 @@ This will:
 
 ```bash
 # Register a new environment
-langflow-cli env register <name> --url <url> --api-key <key>
+lf-cli env register <name> --url <url> --api-key <key>
 
 # List all environments
-langflow-cli env list
+lf-cli env list
 
 # Select default environment
-langflow-cli env select <name>
+lf-cli env select <name>
 
 # Show current environment
-langflow-cli env current
+lf-cli env current
 
 # Show current environment version
-langflow-cli env version
+lf-cli env version
 
 # Delete an environment
-langflow-cli env delete <name>
+lf-cli env delete <name>
 ```
 
 ### Status
@@ -97,10 +97,10 @@ View the current environment and Git configuration:
 
 ```bash
 # Show current status (default profile)
-langflow-cli status
+lf-cli status
 
 # Show status for a specific profile
-langflow-cli status --profile dev
+lf-cli status --profile dev
 ```
 
 The status command displays:
@@ -115,10 +115,10 @@ The status command displays:
 
 ```bash
 # Get current configuration
-langflow-cli settings get
+lf-cli settings get
 
 # Use a specific profile
-langflow-cli settings get --profile dev
+lf-cli settings get --profile dev
 ```
 
 ### Flow Management
@@ -127,65 +127,65 @@ When creating flows, the CLI automatically checks if the flow's `last_tested_ver
 
 ```bash
 # List all flows
-langflow-cli flows list
+lf-cli flows list
 
 # List flows filtered by project ID
-langflow-cli flows list --project-id <project_id>
+lf-cli flows list --project-id <project_id>
 
 # List flows filtered by project name
-langflow-cli flows list --project-name "My Project"
+lf-cli flows list --project-name "My Project"
 
 # Get flow details
-langflow-cli flows get <flow_id>
+lf-cli flows get <flow_id>
 
 # Create a new flow with JSON data string
-langflow-cli flows create --name "My Flow" --data '{"description": "A test flow"}'
+lf-cli flows create --name "My Flow" --data '{"description": "A test flow"}'
 
 # Create a new flow from a JSON file
-langflow-cli flows create --name "My Flow" --file /path/to/flow-data.json
+lf-cli flows create --name "My Flow" --file /path/to/flow-data.json
 
 # Create a flow and associate it with a project by ID
-langflow-cli flows create --name "My Flow" --project-id "123e4567-e89b-12d3-a456-426614174000"
+lf-cli flows create --name "My Flow" --project-id "123e4567-e89b-12d3-a456-426614174000"
 
 # Create a flow and associate it with a project by name
-langflow-cli flows create --name "My Flow" --project-name "My Project"
+lf-cli flows create --name "My Flow" --project-name "My Project"
 
 # Create a flow from file and associate with a project
-langflow-cli flows create --file flow.json --project-name "My Project"
+lf-cli flows create --file flow.json --project-name "My Project"
 
 # Create a flow and ignore version mismatch warnings
-langflow-cli flows create --file flow.json --ignore-version-check
+lf-cli flows create --file flow.json --ignore-version-check
 
 # Update a flow
-langflow-cli flows update <flow_id> --data '{"name": "Updated Name"}'
+lf-cli flows update <flow_id> --data '{"name": "Updated Name"}'
 
 # Delete a flow
-langflow-cli flows delete <flow_id>
+lf-cli flows delete <flow_id>
 ```
 
 ### Project Management
 
 ```bash
 # List all projects
-langflow-cli projects list
+lf-cli projects list
 
 # Get project details
-langflow-cli projects get <project_id>
+lf-cli projects get <project_id>
 
 # List all flows for a project
-langflow-cli projects list-flows <project_id>
+lf-cli projects list-flows <project_id>
 
 # Export a project as a zip file (contains project.json and all flows as JSON files)
-langflow-cli projects export <project_id> --file project_backup.zip
+lf-cli projects export <project_id> --file project_backup.zip
 
 # Create a new project
-langflow-cli projects create --name "My Project" --data '{"description": "A test project"}'
+lf-cli projects create --name "My Project" --data '{"description": "A test project"}'
 
 # Update a project
-langflow-cli projects update <project_id> --data '{"name": "Updated Name"}'
+lf-cli projects update <project_id> --data '{"name": "Updated Name"}'
 
 # Delete a project
-langflow-cli projects delete <project_id>
+lf-cli projects delete <project_id>
 ```
 
 ### Git Commands
@@ -205,44 +205,44 @@ Git configuration is stored in `~/.langflow-cli/git_config`:
 
 ```bash
 # Register a new remote (origin) with HTTPS URL and token
-langflow-cli git remote add origin https://github.com/user/flows-repo --token YOUR_TOKEN
+lf-cli git remote add origin https://github.com/user/flows-repo --token YOUR_TOKEN
 
 # Register a remote with SSH URL and token
-langflow-cli git remote add origin git@github.com:user/flows-repo.git --token YOUR_TOKEN
+lf-cli git remote add origin git@github.com:user/flows-repo.git --token YOUR_TOKEN
 
 # Register a remote with custom domain (GitHub Enterprise) and token
-langflow-cli git remote add origin git@github-ibm:user/flows-repo.git --token YOUR_TOKEN
+lf-cli git remote add origin git@github-ibm:user/flows-repo.git --token YOUR_TOKEN
 
 # Register a remote with HTTPS URL for GitHub Enterprise and token
-langflow-cli git remote add origin https://github-ibm.com/user/flows-repo --token YOUR_TOKEN
+lf-cli git remote add origin https://github-ibm.com/user/flows-repo --token YOUR_TOKEN
 
 # List all registered remotes
-langflow-cli git remote list
+lf-cli git remote list
 
 # Remove a remote
-langflow-cli git remote remove origin
+lf-cli git remote remove origin
 
 # Select the active remote for the current profile
-langflow-cli git remote select origin
+lf-cli git remote select origin
 
 # Select remote and branch in one command
-langflow-cli git remote select origin main
+lf-cli git remote select origin main
 ```
 
 #### Branch Management
 
 ```bash
 # List available branches in the repository
-langflow-cli git branch list
+lf-cli git branch list
 
 # List branches for a specific remote
-langflow-cli git branch list --remote origin
+lf-cli git branch list --remote origin
 
 # Select/checkout a branch
-langflow-cli git checkout main
+lf-cli git checkout main
 
 # Checkout a branch for a specific remote
-langflow-cli git checkout main --remote origin
+lf-cli git checkout main --remote origin
 ```
 
 #### Push/Pull Operations
@@ -252,28 +252,28 @@ Flows are stored in the repository organized by project folders using the patter
 **Push a flow or project to GitHub:**
 ```bash
 # Push a single flow (uses current remote and branch)
-langflow-cli git push --flow-id <flow_id>
+lf-cli git push --flow-id <flow_id>
 
 # Push a flow with a custom commit message
-langflow-cli git push --flow-id <flow_id> --message "Add new flow"
+lf-cli git push --flow-id <flow_id> --message "Add new flow"
 
 # Push a project (all flows in the project) by project ID
-langflow-cli git push --project-id <project_id>
+lf-cli git push --project-id <project_id>
 
 # Push a project by project name
-langflow-cli git push --project-name "My Project"
+lf-cli git push --project-name "My Project"
 
 # Push only project.json (metadata) without flows
-langflow-cli git push --project-name "My Project" --project-only
+lf-cli git push --project-name "My Project" --project-only
 
 # Push to a specific remote and branch
-langflow-cli git push --flow-id <flow_id> --remote origin --branch main --message "Update flow"
+lf-cli git push --flow-id <flow_id> --remote origin --branch main --message "Update flow"
 
 # Push a project with a custom commit message
-langflow-cli git push --project-name "My Project" --message "Update all flows"
+lf-cli git push --project-name "My Project" --message "Update all flows"
 
 # Push only project metadata with a custom message
-langflow-cli git push --project-id <project_id> --project-only --message "Update project metadata"
+lf-cli git push --project-id <project_id> --project-only --message "Update project metadata"
 
 # Note: Flows without a project are stored in the _no_project/ folder
 ```
@@ -281,41 +281,41 @@ langflow-cli git push --project-id <project_id> --project-only --message "Update
 **Pull a flow from GitHub:**
 ```bash
 # Pull a flow by full path (required format: ProjectName/FlowName_id.json)
-langflow-cli git pull "My_Project/My_Flow_abc-123-def.json"
+lf-cli git pull "My_Project/My_Flow_abc-123-def.json"
 
 # Pull and create/update in a specific project
-langflow-cli git pull "Other_Project/Some_Flow_xyz.json" --project-name "My Project"
+lf-cli git pull "Other_Project/Some_Flow_xyz.json" --project-name "My Project"
 
 # Pull with project ID
-langflow-cli git pull "My_Project/My_Flow_abc-123-def.json" --project-id "123e4567-e89b-12d3-a456-426614174000"
+lf-cli git pull "My_Project/My_Flow_abc-123-def.json" --project-id "123e4567-e89b-12d3-a456-426614174000"
 
 # Pull from a specific remote and branch
-langflow-cli git pull "My_Project/My_Flow.json" --remote origin --branch main
+lf-cli git pull "My_Project/My_Flow.json" --remote origin --branch main
 
 # Pull and ignore version mismatch warnings
-langflow-cli git pull "My_Project/My_Flow.json" --ignore-version-check
+lf-cli git pull "My_Project/My_Flow.json" --ignore-version-check
 ```
 
 **Example workflow:**
 ```bash
 # 1. Register a remote with token
-langflow-cli git remote add origin https://github.com/user/flows-repo --token YOUR_TOKEN
+lf-cli git remote add origin https://github.com/user/flows-repo --token YOUR_TOKEN
 
 # 2. Select remote and branch (can be done in one command or separately)
-langflow-cli git remote select origin main
+lf-cli git remote select origin main
 
 # Or select them separately:
-# langflow-cli git remote select origin
-# langflow-cli git checkout main
+# lf-cli git remote select origin
+# lf-cli git checkout main
 
 # 3. Push a flow
-langflow-cli git push --flow-id abc-123-def --message "Add new flow"
+lf-cli git push --flow-id abc-123-def --message "Add new flow"
 
 # Or push an entire project
-langflow-cli git push --project-name "My Project" --message "Update all flows"
+lf-cli git push --project-name "My Project" --message "Update all flows"
 
 # 4. Pull a flow
-langflow-cli git pull "My_Project/My_Flow_abc-123-def.json"
+lf-cli git pull "My_Project/My_Flow_abc-123-def.json"
 ```
 
 ### Using Different Profiles
@@ -323,8 +323,8 @@ langflow-cli git pull "My_Project/My_Flow_abc-123-def.json"
 All commands support a `--profile` option to override the default profile:
 
 ```bash
-langflow-cli flows list --profile dev
-langflow-cli projects list --profile prod
+lf-cli flows list --profile dev
+lf-cli projects list --profile prod
 ```
 
 ## License

@@ -69,6 +69,17 @@ This will:
 
 ## Usage
 
+- [Environment Management](#environment-management)
+- [Status](#status)
+- [Settings](#settings)
+- [Flow Management](#flow-management)
+- [Project Management](#project-management)
+- [Git Commands](#git-commands)
+  - [Remote Management](#remote-management)
+  - [Branch Management](#branch-management)
+  - [Push/Pull Operations](#pushpull-operations)
+- [Using Different Profiles](#using-different-profiles)
+
 ### Environment Management
 
 ```bash

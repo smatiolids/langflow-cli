@@ -151,6 +151,38 @@ def remove_remote(remote_name: str) -> None:
         config.write(f)
 
 
+def update_remote_token(remote_name: str, token: str) -> None:
+    """
+    Update the personal access token for an existing remote.
+    
+    Args:
+        remote_name: Name of the remote
+        token: New GitHub personal access token
+        
+    Raises:
+        ValueError: If remote doesn't exist or token is empty
+    """
+    _ensure_git_config_file()
+    
+    if not token:
+        raise ValueError("Token is required for GitHub authentication")
+    
+    # Verify remote exists
+    get_remote(remote_name)
+    
+    config = configparser.ConfigParser()
+    config.read(get_git_config_path())
+    
+    remote_section = f"remote {remote_name}"
+    config.set(remote_section, "token", token)
+    
+    with open(get_git_config_path(), "w") as f:
+        config.write(f)
+    
+    # Set file permissions
+    os.chmod(get_git_config_path(), 0o644)
+
+
 def set_current_remote(profile_name: str, remote_name: str) -> None:
     """
     Set the current remote for a profile.

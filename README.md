@@ -222,6 +222,9 @@ lf-cli git remote list
 # Remove a remote
 lf-cli git remote remove origin
 
+# Update the personal access token for a remote
+lf-cli git remote set-token origin --token NEW_TOKEN
+
 # Select the active remote for the current profile
 lf-cli git remote select origin
 

@@ -10,6 +10,7 @@ from langflow_cli.git_config import (
     add_remote,
     list_remotes,
     remove_remote,
+    update_remote_token,
     set_current_remote,
     set_current_branch,
     get_current_remote,
@@ -95,6 +96,22 @@ def remote_remove(name: str):
         raise click.Abort()
     except Exception as e:
         console.print(f"[red]✗[/red] Failed to remove remote: {str(e)}")
+        raise click.Abort()
+
+
+@remote.command("set-token")
+@click.argument("name")
+@click.option("--token", required=True, help="GitHub personal access token (required)")
+def remote_set_token(name: str, token: str):
+    """Update the personal access token for a remote."""
+    try:
+        update_remote_token(name, token)
+        console.print(f"[green]✓[/green] Token updated for remote '{name}'")
+    except ValueError as e:
+        console.print(f"[red]✗[/red] {str(e)}")
+        raise click.Abort()
+    except Exception as e:
+        console.print(f"[red]✗[/red] Failed to update token: {str(e)}")
         raise click.Abort()
 
 

@@ -292,6 +292,136 @@ class GitHubClient:
         
         return matches
     
+    def create_branch(self, branch_name: str, source_branch: Optional[str] = None) -> None:
+        """
+        Create a new branch from a source branch.
+        
+        Args:
+            branch_name: Name of the branch to create
+            source_branch: Source branch to create from (defaults to default branch)
+            
+        Raises:
+            ValueError: If branch already exists or operation fails
+        """
+        try:
+            source = source_branch or self.repo.default_branch
+            
+            # Get the SHA of the source branch
+            source_ref = self.repo.get_git_ref(f"heads/{source}")
+            source_sha = source_ref.object.sha
+            
+            # Create new branch
+            self.repo.create_git_ref(ref=f"refs/heads/{branch_name}", sha=source_sha)
+        except GithubException as e:
+            if e.status == 422:
+                # 422 usually means branch already exists
+                raise ValueError(f"Branch '{branch_name}' already exists")
+            raise ValueError(f"Failed to create branch: {str(e)}")
+    
+    def delete_branch(self, branch_name: str) -> None:
+        """
+        Delete a branch.
+        
+        Args:
+            branch_name: Name of the branch to delete
+            
+        Raises:
+            ValueError: If branch is the default branch, doesn't exist, or operation fails
+        """
+        try:
+            # Prevent deletion of default branch
+            if branch_name == self.repo.default_branch:
+                raise ValueError(f"Cannot delete default branch '{branch_name}'")
+            
+            # Get the branch reference
+            ref = self.repo.get_git_ref(f"heads/{branch_name}")
+            ref.delete()
+        except GithubException as e:
+            if e.status == 404:
+                raise ValueError(f"Branch '{branch_name}' not found")
+            raise ValueError(f"Failed to delete branch: {str(e)}")
+    
+    def create_pull_request(
+        self,
+        title: str,
+        body: str,
+        head: str,
+        base: str,
+        draft: bool = False
+    ):
+        """
+        Create a pull request.
+        
+        Args:
+            title: PR title
+            body: PR body/description
+            head: Source branch name
+            base: Target branch name
+            draft: Whether to create as draft PR
+            
+        Returns:
+            Pull request object
+            
+        Raises:
+            ValueError: If operation fails
+        """
+        try:
+            pr = self.repo.create_pull(
+                title=title,
+                body=body,
+                head=head,
+                base=base,
+                draft=draft
+            )
+            return pr
+        except GithubException as e:
+            error_msg = str(e)
+            if "already exists" in error_msg.lower():
+                raise ValueError(f"Pull request from '{head}' to '{base}' already exists")
+            raise ValueError(f"Failed to create pull request: {str(e)}")
+    
+    def get_recent_commits(self, branch: str, count: int = 10) -> List:
+        """
+        Get recent commits from a branch.
+        
+        Args:
+            branch: Branch name
+            count: Number of commits to retrieve (default: 10)
+            
+        Returns:
+            List of commit objects
+        """
+        try:
+            commits = self.repo.get_commits(sha=branch)
+            return list(commits[:count])
+        except GithubException as e:
+            raise ValueError(f"Failed to get commits: {str(e)}")
+    
+    def pr_exists(self, head: str, base: str):
+        """
+        Check if a pull request already exists between two branches.
+        
+        Args:
+            head: Source branch name
+            base: Target branch name
+            
+        Returns:
+            Pull request object if exists, None otherwise
+        """
+        try:
+            # Format: owner:branch_name for head
+            head_full = f"{self.owner}:{head}"
+            pulls = self.repo.get_pulls(state="open", head=head_full, base=base)
+            
+            # Check if any PR matches
+            for pr in pulls:
+                if pr.head.ref == head and pr.base.ref == base:
+                    return pr
+            
+            return None
+        except GithubException:
+            return None
+    
     @staticmethod
     def sanitize_name(name: str, max_length: int = 50) -> str:
         """
